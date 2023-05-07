@@ -1,9 +1,15 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { LngLat, Map, Marker } from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
+import { PropertiesPageComponent } from '../properties-page/properties-page.component';
 
 interface MarkerAndColor {
   color: string;
   marker: Marker;
+}
+
+interface PlainMarker {
+  color: string;
+  lngLat: number[];
 }
 @Component({
   templateUrl: './markers-page.component.html',
@@ -28,6 +34,8 @@ export class MarkersPageComponent implements AfterViewInit {
       center: this.currentCenter, // starting position [lng, lat]
       zoom: 10, // starting zoom
     });
+
+    this.readFromLocalStorage();
   }
 
   createMarker() {
@@ -49,6 +57,7 @@ export class MarkersPageComponent implements AfterViewInit {
       .addTo(this.map);
 
     this.markers.push({ color, marker });
+    this.saveToLocalStorage();
   }
 
   deleteMarker(index: number) {
@@ -60,6 +69,29 @@ export class MarkersPageComponent implements AfterViewInit {
     this.map?.flyTo({
       zoom: 14,
       center: marker.getLngLat(),
+    });
+  }
+
+  saveToLocalStorage() {
+    const plainMarkers: PlainMarker[] = this.markers.map(
+      ({ color, marker }) => {
+        return {
+          color,
+          lngLat: marker.getLngLat().toArray(),
+        };
+      }
+    );
+    localStorage.setItem('plainMarkers', JSON.stringify(plainMarkers));
+  }
+
+  readFromLocalStorage() {
+    const plainMarkersString = localStorage.getItem('plainMarkers') ?? '[]';
+    const plainMarkers: PlainMarker[] = JSON.parse(plainMarkersString);
+
+    plainMarkers.forEach(({ color, lngLat }) => {
+      const [lng, lat] = lngLat;
+      const coords = new LngLat(lng, lat);
+      this.addMarker(coords, color);
     });
   }
 }
