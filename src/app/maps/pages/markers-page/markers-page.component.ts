@@ -1,12 +1,18 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { LngLat, Map, Marker } from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
 
+interface MarkerAndColor {
+  color: string;
+  marker: Marker;
+}
 @Component({
   templateUrl: './markers-page.component.html',
   styleUrls: ['./markers-page.component.css'],
 })
 export class MarkersPageComponent implements AfterViewInit {
   @ViewChild('map') divMap?: ElementRef;
+
+  public markers: MarkerAndColor[] = [];
 
   public map?: Map;
   public currentCenter: LngLat = new LngLat(
@@ -41,5 +47,19 @@ export class MarkersPageComponent implements AfterViewInit {
     })
       .setLngLat(lngLat)
       .addTo(this.map);
+
+    this.markers.push({ color, marker });
+  }
+
+  deleteMarker(index: number) {
+    this.markers[index].marker.remove();
+    this.markers.splice(index, 1);
+  }
+
+  flyTo(marker: Marker) {
+    this.map?.flyTo({
+      zoom: 14,
+      center: marker.getLngLat(),
+    });
   }
 }
