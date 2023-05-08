@@ -8,4 +8,6 @@ import { Component } from '@angular/core';
   templateUrl: './counter-alone.component.html',
   styleUrls: ['./counter-alone.component.css'],
 })
-export class CounterAloneComponent {}
+export class CounterAloneComponent {
+  public counter: number = 10;
+}
