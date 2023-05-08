@@ -9,6 +9,6 @@ const envFileContent = `
     otra: "PROPIEDAD",
   }:`;
 
-mkdirSync("./src/environments", { recursiove: true });
+mkdirSync("./src/environments", { recursive: true });
 
 writeFileSync(targetPath, envFileContent);
