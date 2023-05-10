@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,5 +9,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./counter-alone.component.css'],
 })
 export class CounterAloneComponent {
+  @Input()
   public counter: number = 10;
 }
